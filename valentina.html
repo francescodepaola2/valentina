@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Domanda importante 💘</title>
+  <style>
+    :root { --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; --text:#2b2b2b; }
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      overflow:hidden;
+      color:var(--text);
+    }
+    .card{
+      width:min(560px, 92vw);
+      padding:28px 22px;
+      border-radius:24px;
+      background:var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+      text-align:center;
+      position:relative;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(26px, 4.5vw, 38px);
+      letter-spacing: .2px;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      opacity:.85;
+      font-size: 15px;
+    }
+    .btns{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 14px;
+      align-items:center;
+    }
+    button{
+      border:0;
+      padding:14px 18px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:16px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      background: white;
+      min-width: 120px;
+      transform-origin: center;
+      touch-action: manipulation;
+    }
+    button:hover{ transform: translateY(-2px) scale(1.02); }
+    button:active{ transform: translateY(0px) scale(.99); }
+
+    .primary{ background: linear-gradient(135deg, #fff, #ffd1dc); }
+    .danger{ background: linear-gradient(135deg, #fff, #ffc3a0); }
+
+    .panel{ display:none; animation: pop .28s ease both; }
+    .panel.active{ display:block; }
+    @keyframes pop { from{ transform: scale(.97); opacity:0; } to{ transform: scale(1); opacity:1; } }
+
+    .gif{
+      width:min(420px, 86vw);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 14px 36px rgba(0,0,0,.16);
+      margin: 14px auto 0;
+      border: 4px solid rgba(255,255,255,.65);
+      background:#fff;
+    }
+    .gif img{ width:100%; display:block; }
+
+    .small{
+      margin-top: 10px;
+      font-size: 13px;
+      opacity:.75;
+    }
+
+    .hearts{
+      position:absolute; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      border-radius:24px;
+    }
+    .heart{
+      position:absolute;
+      bottom:-20px;
+      font-size: 18px;
+      opacity:.0;
+      animation: floatUp 2.2s ease-in forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(0) scale(.8) rotate(0deg); opacity:0; }
+      15%{ opacity:.95; }
+      100%{ transform: translateY(-520px) scale(1.25) rotate(20deg); opacity:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="hearts" id="hearts"></div>
+
+    <!-- SCHERMATA 1 -->
+    <section class="panel active" id="screenAsk">
+      <h1>Vuoi essere la mia Valentina? 💘</h1>
+      <p class="subtitle">Rispondi col cuore 🥰</p>
+
+      <div class="btns">
+        <button class="primary" id="askYes">Sì</button>
+        <button class="danger" id="askNo">No</button>
+      </div>
+
+      <p class="small" id="hint">Scegli con calma 😇</p>
+    </section>
+
+    <!-- SCHERMATA 2 -->
+    <section class="panel" id="screenYes">
+      <h1>YEEEES 💘</h1>
+      <p class="subtitle">Da oggi sei la mia Valentina 🥹</p>
+
+      <div class="gif">
+        <img
+          alt="Gattini innamorati"
+          src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+      </div>
+
+      <p class="small">Ok ora mi devi un abbraccio gigante 😽</p>
+    </section>
+  </div>
+
+  <script>
+    const heartsBox = document.getElementById("hearts");
+    const screenAsk = document.getElementById("screenAsk");
+    const screenYes = document.getElementById("screenYes");
+
+    const askYes = document.getElementById("askYes");
+    const askNo  = document.getElementById("askNo");
+    const hint   = document.getElementById("hint");
+
+    function show(screen){
+      [screenAsk, screenYes].forEach(s => s.classList.remove("active"));
+      screen.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function spawnHearts(count = 18){
+      const emojis = ["💖","💘","💞","💗","💕","😻"];
+      for(let i=0; i<count; i++){
+        const el = document.createElement("div");
+        el.className = "heart";
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        el.style.left = Math.random()*100 + "%";
+        el.style.fontSize = (14 + Math.random()*18) + "px";
+        el.style.animationDelay = (Math.random()*0.35) + "s";
+        heartsBox.appendChild(el);
+        el.addEventListener("animationend", () => el.remove());
+      }
+    }
+
+    function vibrate(){
+      if (navigator.vibrate) navigator.vibrate([25, 35, 25]);
+    }
+
+    // Se preme Sì -> schermata finale
+    askYes.addEventListener("click", () => {
+      show(screenYes);
+      spawnHearts(26);
+      vibrate();
+    });
+
+    // Logica "No si rimpicciolisce finché sparisce"
+    let noScale = 1.0;        // scala corrente
+    let noClicks = 0;         // numero click su No
+    const shrinkStep = 0.72;  // quanto si rimpicciolisce ogni volta (0.72 = -28%)
+
+    function shrinkNo(){
+      noClicks += 1;
+      noScale *= shrinkStep;
+
+      // Applica scala + un piccolo shake simpatico
+      askNo.style.transform = `scale(${noScale})`;
+      vibrate();
+
+      if (noScale > 0.45) {
+        hint.textContent = "Mmm… sicura sicura? 😼";
+      } else if (noScale > 0.25) {
+        hint.textContent = "Il “No” sta perdendo potere… 😭";
+      } else if (noScale > 0.12) {
+        hint.textContent = "Ok ormai si vede a malapena… 👀";
+      } else {
+        // Sparisce: resta solo Sì
+        askNo.style.display = "none";
+        hint.textContent = "Perfetto. Ora resta solo una scelta: Sì 💘";
+        spawnHearts(10);
+      }
+    }
+
+    // click e touch (mobile)
+    askNo.addEventListener("click", (e) => {
+      e.preventDefault();
+      shrinkNo();
+    });
+    askNo.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      shrinkNo();
+    }, { passive: false });
+  </script>
+</body>
+</html>
+
